@@ -14,13 +14,13 @@ class Account {
 
     public synchronized void deposit(double amount) {
         balance += amount;
-        System.out.println("Deposit: " + amount + ", New Balance: " + balance);
+        System.out.println("Deposited: $" + amount + ", New Balance: $" + balance);
     }
 
     public synchronized void withdraw(double amount) {
         if (balance >= amount) {
             balance -= amount;
-            System.out.println("Withdrawal: " + amount + ", New Balance: " + balance);
+            System.out.println("Withdrawn: $" + amount + ", New Balance: $" + balance);
         } else {
             System.out.println("Insufficient funds for withdrawal.");
         }
@@ -57,21 +57,21 @@ public class HelloApplication {
         // Create an account with initial balance
         Account account = new Account(1000.0);
 
-        // Create a list of transactions
+        // Set up a list of transactions
         ArrayList<Runnable> transactions = new ArrayList<>();
         transactions.add(new Transaction(account, "deposit", 200.0));
         transactions.add(new Transaction(account, "withdraw", 300.0));
         transactions.add(new Transaction(account, "withdraw", 800.0));
 
-        // Create an ExecutorService with a fixed thread pool size
+        // Use a thread pool for concurrent execution
         ExecutorService executor = Executors.newFixedThreadPool(3);
 
-        // Execute the transactions using the ExecutorService
+        // Execute the transactions using the thread pool
         for (Runnable transaction : transactions) {
             executor.execute(transaction);
         }
 
-        // Shutdown the executor
+        // Shut down the thread pool
         executor.shutdown();
 
         try {
@@ -81,6 +81,7 @@ public class HelloApplication {
             e.printStackTrace();
         }
 
-        System.out.println("Final Balance: " + account.getBalance());
+        // Display the final account balance
+        System.out.println("Final Balance: $" + account.getBalance());
     }
 }
